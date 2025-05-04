@@ -52,7 +52,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # Criando o executável
 add_executable(semaforo  
-    main.c 
+    main
     lib/Display_Bibliotecas/ssd1306.c
 )
 
