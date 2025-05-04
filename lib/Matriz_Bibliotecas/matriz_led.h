@@ -5,15 +5,29 @@
 #include "hardware/pio.h"
 #include "generated/ws2812.pio.h"
 
-#define PINO_WS2812 7   // Pino GPIO 
-#define NUM_LINHAS    5   // Dimensão da matriz
-#define NUM_COLUNAS   5   // Dimensão da matriz
-#define NUM_PIXELS    (NUM_LINHAS * NUM_COLUNAS) // Total 25
-#define RGBW_ATIVO    false // Se os LEDs são RGBW ou RGB
+/* ---------- Hardware ---------- */
+#define PINO_WS2812   7
+#define NUM_LINHAS    5
+#define NUM_COLUNAS   5
+#define NUM_PIXELS    (NUM_LINHAS * NUM_COLUNAS)
+#define RGBW_ATIVO    false
 
-void inicializar_matriz_led();
-// Parâmetros: Ponteiros para os nomes das cores (ex: "Vermelho")
-void mostrar_faixas_cores(const char *cor_faixa1, const char *cor_faixa2, const char *cor_faixa3);
-// Função para desligar todos os LEDs da matriz
-void desligar_matriz();
-#endif // MATRIZ_LED_H
+/* ---------- Utilidades de cor ---------- */
+#define GRB(r,g,b)   ( ((uint32_t)(g) << 16) | ((uint32_t)(r) << 8) | (b) )
+
+extern const uint32_t COR_VERDE;
+extern const uint32_t COR_AMARELO;
+extern const uint32_t COR_VERMELHO;
+extern const uint32_t COR_OFF;
+
+/* Padrões 5 × 5 (✓, !, X) */
+extern const uint8_t PAD_OK[5];
+extern const uint8_t PAD_EXC[5];
+extern const uint8_t PAD_X[5];
+
+/* API mínima */
+void inicializar_matriz_led(void);
+void matriz_draw_pattern(const uint8_t pad[5], uint32_t cor_on);
+void matriz_clear(void);
+
+#endif /* MATRIZ_LED_H */
