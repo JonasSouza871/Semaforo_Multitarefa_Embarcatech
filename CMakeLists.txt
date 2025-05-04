@@ -54,6 +54,7 @@ include_directories(${CMAKE_SOURCE_DIR}/lib)
 add_executable(semaforo  
     main
     lib/Display_Bibliotecas/ssd1306.c
+    lib/Matriz_Bibliotecas/matriz_led.c
 )
 
 # Bibliotecas utilizadas
@@ -63,6 +64,7 @@ target_link_libraries(semaforo
     FreeRTOS-Kernel
     FreeRTOS-Kernel-Heap4
     hardware_pwm
+    hardware_pio
 )
 
 
