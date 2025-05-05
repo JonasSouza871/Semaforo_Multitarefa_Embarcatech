@@ -1,5 +1,3 @@
-/* Sistema de Semáforo Inteligente – BitDog Lab / RP2040 */
-
 #include "pico/bootrom.h"
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"

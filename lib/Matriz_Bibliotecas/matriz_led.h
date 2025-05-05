@@ -5,7 +5,7 @@
 #include "hardware/pio.h"
 #include "generated/ws2812.pio.h"
 
-/* ---------- Hardware ---------- */
+
 #define PINO_WS2812   7  //Pino GPIO para comunicação com WS2812
 #define NUM_LINHAS    5  //Número de linhas da matriz
 #define NUM_COLUNAS   5  //Número de colunas da matriz
