@@ -1,34 +1,4 @@
-# == DO NOT EDIT THE FOLLOWING LINES for the Raspberry Pi Pico VS Code Extension to work ==
-if(WIN32)
-    set(USERHOME $ENV{USERPROFILE})
-else()
-    set(USERHOME $ENV{HOME})
-endif()
-set(sdkVersion 2.1.0)
-set(toolchainVersion 13_3_Rel1)
-set(picotoolVersion 2.1.0)
-set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
-if (EXISTS ${picoVscode})
-    include(${picoVscode})
-endif()
-# ====================================================================================
-if(WIN32)
-    set(USERHOME $ENV{USERPROFILE})
-else()
-    set(USERHOME $ENV{HOME})
-endif()
-set(sdkVersion 2.1.0)
-set(toolchainVersion 13_3_Rel1)
-set(picotoolVersion 2.1.0)
-set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
-if (EXISTS ${picoVscode})
-    include(${picoVscode})
-endif()
-# 
-
-cmake_minimum_required(VERSION 3.13)
-
-# Padrões
+cmake_minimum_required(VERSION 3.13)  # Padrões 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -51,11 +21,14 @@ pico_sdk_init()
 include_directories(${CMAKE_SOURCE_DIR}/lib)
 
 # Criando o executável
-add_executable(semaforo  
+add_executable(semaforo
     main
     lib/Display_Bibliotecas/ssd1306.c
     lib/Matriz_Bibliotecas/matriz_led.c
 )
+
+# Adiciona o diretório raiz como include
+target_include_directories(semaforo PRIVATE ${CMAKE_SOURCE_DIR})
 
 # Bibliotecas utilizadas
 target_link_libraries(semaforo
@@ -67,10 +40,9 @@ target_link_libraries(semaforo
     hardware_pio
 )
 
-
 # Habilita I/O padrão via USB (ou UART)
 pico_enable_stdio_usb(semaforo 1)
-pico_enable_stdio_uart(semaforo 1)
+pico_enable_stdio_uart(semaforo 0)
 
 # Gera arquivos binários/UF2
 pico_add_extra_outputs(semaforo)
