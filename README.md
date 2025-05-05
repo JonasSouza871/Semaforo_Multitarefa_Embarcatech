@@ -1,7 +1,7 @@
-# 🚦 **PicoSignaLED** – Semáforo Inteligente com Display OLED & Matriz WS2812
+# 🚦 **SemaTask RT** – Semáforo Inteligente com Display OLED & Matriz WS2812
 
 ## 📘 *Descrição Breve*  
- **PicoSignaLED** é um firmware para o Raspberry Pi Pico (RP2040) que implementa um semáforo inteligente completo:  
+ **SemaTask RT** é um firmware para o Raspberry Pi Pico (RP2040) que implementa um semáforo inteligente completo:  
 > • Dois modos de operação (Normal / Noturno)  
 > • Exibição gráfica em OLED 128×64 (SSD1306)  
 > • Símbolos animados em matriz 5×5 de LEDs WS2812  
