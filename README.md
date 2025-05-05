@@ -1,216 +1,162 @@
-# Semáforo Inteligente com Pico e FreeRTOS 🚀
+# 🚦 **PicoSignaLED** – Semáforo Inteligente com Display OLED & Matriz WS2812
 
-## 📘 Descrição Breve
+> 📘 *Descrição Breve*  
+> **PicoSignaLED** é um firmware para o Raspberry Pi Pico (RP2040) que implementa um semáforo inteligente completo:  
+> • Dois modos de operação (Normal / Noturno)  
+> • Exibição gráfica em OLED 128×64 (SSD1306)  
+> • Símbolos animados em matriz 5×5 de LEDs WS2812  
+> • Sinalização sonora em buzzer PWM  
+> • Arquitetura multitarefa com **FreeRTOS**.  
+>  
+> O projeto serve como base para laboratórios de sistemas embarcados, aulas de RTOS ou demonstrações de periféricos I²C, PIO + DMA e PWM.
 
-Este repositório contém o firmware para o **Semáforo Inteligente com Pico e FreeRTOS**, um projeto embarcado desenvolvido para a placa **Raspberry Pi Pico** (compatível com Pico W, conforme `CMakeLists.txt`).
-
-**Objetivo Principal:** Simular um sistema de semáforo de trânsito com funcionalidades avançadas, incluindo modos de operação diurno (sequência normal Verde-Amarelo-Vermelho) e noturno (Amarelo piscante), com feedback visual detalhado em um display OLED e uma matriz de LEDs WS2812, além de alertas sonoros via buzzer.
-
-**Utilidade:** Serve como um exemplo prático e didático do uso do Raspberry Pi Pico com o sistema operacional de tempo real **FreeRTOS** para gerenciar múltiplas tarefas concorrentes (controle dos LEDs, leitura de botão, atualização do display, controle da matriz, buzzer). Demonstra também a integração com periféricos comuns utilizando **GPIO** (LEDs e Botão), **I2C** (Display OLED SSD1306), **PIO** (Matriz de LEDs WS2812) e **PWM** (Buzzer).
 ---
 
 ## ✨ Funcionalidades Principais
-
-*   **<Funcionalidade 1>:** <Descrição técnica. Ex: "Controle de LEDs RGB (WS2812) via PIO para exibir padrões visuais.">
-*   **<Funcionalidade 2>:** <Descrição técnica. Ex: "Interface com display OLED (SSD1306) via I2C para exibir status e informações.">
-*   **<Funcionalidade 3>:** <Descrição técnica. Ex: "Gerenciamento de tarefas concorrentes utilizando FreeRTOS (se aplicável).">
-*   **<Funcionalidade 4>:** <Descrição técnica. Ex: "Leitura de entradas digitais (botões) com debounce para interação do usuário.">
-*   **<Funcionalidade 5>:** <Descrição técnica. Ex: "Geração de sinais sonoros (buzzer) via PWM.">
-*   **<Funcionalidade 6>:** <Descrição técnica. Ex: "Comunicação Serial via USB para debugging e monitoramento.">
-*   **(Opcional) <Outra Funcionalidade>:** <Descrição...>
+| # | Recurso | Detalhes |
+|---|---------|----------|
+| 1 | **Modo Normal** | Sequência Verde → Amarelo → Vermelho com tempos configuráveis |
+| 2 | **Modo Noturno** | Pisca amarelo em duty-cycle reduzido |
+| 3 | **Buzzer Acessível** | Padrões de beep diferentes por cor, facilitando uso por PCD 🦮 |
+| 4 | **Display OLED** | Título, modo atual, cor ativa e mensagens contextuais |
+| 5 | **Matriz 5 × 5** | Animação “✓”, “!” ou “✕” sincronizada com o semáforo |
+| 6 | **Hot-Swap UF2** | Botão B reinicia diretamente no bootloader para atualização |
+| 7 | **Código Modular** | Bibliotecas independentes (`ssd1306`, `matriz_led`) |
+| 8 | **Adaptável** | Placeholders permitem portar para outros pinos / módulos |
 
 ---
 
 ## ⚙️ Hardware Necessário
+- 🔴 **Raspberry Pi Pico / Pico W**  
+- 🟢 **Matriz WS2812 (5 × 5)** – 25 LEDs endereçáveis  
+- 🔵 **Display OLED SSD1306** – 128×64, I²C  
+- 🟡 **LED RGB discreto** (ou 2 LEDs) nos pinos 11-13  
+- 🟣 **Buzzer passivo** (40 Ω – 5 V) no pino 10  
+- ⚫ **Botão de Modo** (GPIO 5)  
+- ⚪ **Botão UF2** (GPIO 6)  
+- 🔌 Fonte 5 V / USB-C  
+- 🛠️ Cabos, solda e protoboard conforme necessidade  
 
-*   **Microcontrolador:** 1x Raspberry Pi Pico ou Pico W
-*   **<Componente Principal 1>:** <Quantidade>x <Nome do Componente. Ex: "Display OLED SSD1306 128x64 I2C">
-*   **<Componente Principal 2>:** <Quantidade>x <Nome do Componente. Ex: "Matriz de LED WS2812 5x5">
-*   **<Componente Sensor/Atuador 1>:** <Quantidade>x <Nome do Componente. Ex: "LED Difuso 5mm (Verde, Amarelo, Vermelho)">
-*   **<Componente Sensor/Atuador 2>:** <Quantidade>x <Nome do Componente. Ex: "Botão Tátil (Push Button)">
-*   **<Componente Sensor/Atuador 3>:** <Quantidade>x <Nome do Componente. Ex: "Buzzer Ativo/Passivo 5V">
-*   **Resistores:** <Valores e Quantidades. Ex: "3x 220Ω para LEDs, 1x 10kΩ para Pull-up (se necessário)">
-*   **Protoboard e Jumpers:** Para montagem do circuito.
-*   **Fonte de Alimentação:** Cabo Micro USB (para o Pico) e/ou fonte externa <Tensão/Corrente> (se necessário para periféricos).
+> 💡 *Substitua por seus próprios componentes, tensões ou quantidades caso altere o projeto.*
 
 ---
 
 ## 🔌 Esquema de Conexões
 
-Conecte os componentes ao Raspberry Pi Pico conforme descrito abaixo. Certifique-se de que as conexões de alimentação (VBUS/VSYS, 3V3, GND) estejam corretas.
+### 1. OLED SSD1306
+| Sinal | Pico GPIO | Observações |
+|-------|-----------|-------------|
+| SDA   | **14**    | PUX-UP interno habilitado |
+| SCL   | **15**    | I²C1 @ 400 kHz |
+| VCC   | 3V3(OUT)  | 3,3 V |
+| GND   | GND       | — |
 
-**Referência de Pinagem do Pico:** [Link para Pinagem Oficial do Pico](https://datasheets.raspberrypi.com/pico/Pico-R3-A4-Pinout.pdf)
+### 2. Matriz WS2812
+| Sinal | Pico GPIO | Observações |
+|-------|-----------|-------------|
+| DIN   | **7**     | PIO0 / SM0 – 800 kHz |
+| VCC   | 5 V ou 3V3| - |
+| GND   | GND       | — |
 
-### <Nome do Componente 1: Ex: Display OLED SSD1306>
+### 3. LED RGB Discreto
+| Cor | Pico GPIO | Resistor |
+|-----|-----------|----------|
+| Verde   | **11** | 330 Ω |
+| Azul(*) | **12** | 330 Ω *(debug opcional)* |
+| Vermelho| **13** | 330 Ω |
 
-| Pino Pico | Função       | Pino Display |
-| :-------- | :----------- | :----------- |
-| GP<Número>  | I2C1 SDA     | SDA          |
-| GP<Número>  | I2C1 SCL     | SCL          |
-| 3V3 (OUT) | Alimentação  | VCC          |
-| GND       | Terra        | GND          |
+### 4. Buzzer PWM
+| Sinal | Pico GPIO | PWM Slice |
+|-------|-----------|-----------|
+| +5 V  | **10**    | configurado no código |
 
-*(Observação: Verifique o endereço I2C do seu display. O padrão comum é `0x3C`)*
-
-### <Nome do Componente 2: Ex: Matriz LED WS2812>
-
-| Pino Pico | Função       | Pino Matriz |
-| :-------- | :----------- | :---------- |
-| GP<Número>  | PIO Data Out | DIN         |
-| VSYS/VBUS | Alimentação +| 5V / VCC    |
-| GND       | Terra        | GND         |
-
-*(**Importante:** Para matrizes WS2812, considere usar uma fonte externa se o consumo for alto e conecte o GND da fonte externa ao GND do Pico.)*
-
-### <Nome do Componente 3: Ex: LEDs Individuais>
-
-| Pino Pico | Função         | Conexão                                    |
-| :-------- | :------------- | :----------------------------------------- |
-| GP<Número>  | LED <Cor 1>    | Anodo (+) do LED <Cor 1> (via Resistor <Valor>Ω) |
-| GP<Número>  | LED <Cor 2>    | Anodo (+) do LED <Cor 2> (via Resistor <Valor>Ω) |
-| ...       | ...            | ...                                        |
-| GND       | Terra Comum    | Catodo (-) de todos os LEDs                 |
-
-### <Nome do Componente 4: Ex: Botões>
-
-| Pino Pico | Função         | Conexão                                |
-| :-------- | :------------- | :------------------------------------- |
-| GP<Número>  | Botão <Nome 1> | Um terminal do botão                   |
-| GND       | Terra          | Outro terminal do botão (com Pull-up interno ativado no código ou resistor externo para 3V3) |
-| ...       | ...            | ...                                    |
-
-### <Nome do Componente 5: Ex: Buzzer>
-
-| Pino Pico | Função      | Pino Buzzer |
-| :-------- | :---------- | :---------- |
-| GP<Número>  | PWM Out     | Positivo (+) |
-| GND       | Terra       | Negativo (-) |
-
-*(Adapte as seções acima conforme os componentes do seu projeto)*
+### 5. Botões
+| Função          | Pico GPIO | Pull-up |
+|-----------------|-----------|---------|
+| Botão A (Modo)  | **5**     | **Sim** |
+| Botão B (UF2)   | **6**     | **Sim** |
 
 ---
 
 ## 💻 Configuração do Ambiente
+1. **Pico-SDK <vX.Y.Z>**  
+   ```bash
+   git clone -b <versão> https://github.com/raspberrypi/pico-sdk
+   export PICO_SDK_PATH=<path>
+````
 
-Para compilar e carregar o firmware no Raspberry Pi Pico, você precisará configurar o ambiente de desenvolvimento em seu computador.
+2. **FreeRTOS-Kernel** (fork RP2040)
 
-1.  **Instalar as Ferramentas Essenciais:**
-    *   **Pico SDK:** Siga o guia oficial ["Getting Started with Raspberry Pi Pico"](https://datasheets.raspberrypi.com/pico/getting-started-with-pico.pdf) para o seu sistema operacional (Linux, macOS ou Windows). Isso inclui:
-        *   `CMake`
-        *   `ARM GCC Compiler Toolchain` (`gcc-arm-none-eabi`)
-        *   `Pico SDK` e `Pico Examples` (recomendado)
-    *   **(Opcional, Recomendado) Visual Studio Code:** Instale o VS Code com as extensões:
-        *   `C/C++` (Microsoft)
-        *   `CMake Tools` (Microsoft)
-        *   `Cortex-Debug` (marus25) - Para debugging via SWD (requer probe)
-        *   **(Se usar VS Code) Raspberry Pi Pico/RP2040:** (Proprietário da Raspberry Pi) - Facilita a configuração e compilação.
+   ```bash
+   git clone https://github.com/FreeRTOS/FreeRTOS-Kernel
+   ```
+3. **Toolchain ARM-GNU** >= 13.2
 
-2.  **Clonar o Repositório:**
-    ```bash
-    git clone <URL do seu repositório Git>
-    cd <Nome do Diretório do Projeto>
-    ```
+   * `arm-none-eabi-gcc`, `cmake >= 3.13`, `ninja`
+4. **VS Code + Extensão “Pico-CMake”** (opcional)
+5. **Picotool / picoprobe** para flash e debug
 
-3.  **Obter Submódulos (se houver):** Se o projeto usar submódulos Git (como bibliotecas externas):
-    ```bash
-    git submodule update --init --recursive
-    ```
-
-4.  **Configurar o Caminho do Pico SDK:** Certifique-se de que a variável de ambiente `PICO_SDK_PATH` esteja definida corretamente ou que o SDK esteja em um local padrão (`~/pico-sdk` ou conforme configurado no CMake).
+> 📝 *Adapte caminhos `<…>` aos diretórios da sua máquina.*
 
 ---
 
 ## ▶️ Compilação e Upload
 
-Siga estes passos para compilar o projeto e carregar o firmware no Pico:
+```bash
+# 1. Crie diretório de build isolado
+mkdir build && cd build
 
-1.  **Criar e Acessar o Diretório de Build:**
-    ```bash
-    mkdir build
-    cd build
-    ```
+# 2. Gere arquivos via CMake
+cmake -G "Ninja" ..
 
-2.  **Configurar com CMake:** (Execute a partir do diretório `build`)
-    ```bash
-    # Certifique-se que PICO_SDK_PATH está definido ou use -DPICO_SDK_PATH=/caminho/para/seu/sdk
-    cmake ..
-    ```
-    *Se estiver usando FreeRTOS ou outras bibliotecas fora do SDK, pode ser necessário adicionar caminhos no `CMakeLists.txt` ou via flags `-D` no comando `cmake` (verifique o `CMakeLists.txt` do projeto).*
+# 3. Compile
+ninja
 
-3.  **Compilar o Projeto:**
-    ```bash
-    make -j$(nproc) # Ou simplesmente 'make'
-    ```
-    Isso gerará vários arquivos dentro do diretório `build`, incluindo `<nome_do_executavel>.uf2`.
+# 4. Conecte o Pico em BOOTSEL (ou use Botão B) e faça upload
+cp semaforo.uf2 /media/<username>/RPI-RP2
+```
 
-4.  **Carregar o Firmware (.uf2) no Pico:**
-    *   Desconecte o Pico da porta USB (se conectado).
-    *   Pressione e segure o botão `BOOTSEL` no Pico.
-    *   Conecte o Pico ao computador via cabo Micro USB enquanto mantém `BOOTSEL` pressionado.
-    *   Solte o botão `BOOTSEL`. O Pico aparecerá como um dispositivo de armazenamento USB (como um pendrive) chamado `RPI-RP2`.
-    *   Copie o arquivo `<nome_do_executavel>.uf2` (localizado na pasta `build`) para dentro do dispositivo `RPI-RP2`.
-    *   O Pico reiniciará automaticamente e começará a executar o novo firmware.
+> 🔄 *Para atualização OTA no Pico W, substitua o passo 4 pelo seu script de OTA.*
 
 ---
 
 ## 📁 Estrutura do Código
 
-O código-fonte está organizado da seguinte forma:
-
-
-.
-├── .vscode/ # Configurações do VS Code (launch.json, settings.json)
-├── build/ # Diretório de compilação (gerado pelo CMake/Make)
-├── lib/ # Bibliotecas locais do projeto
-│ ├── Display_Bibliotecas/ # Biblioteca para o Display OLED
-│ │ ├── font.h # Definição da fonte para o display
-│ │ ├── ssd1306.c # Implementação do driver SSD1306
-│ │ └── ssd1306.h # Header do driver SSD1306
-│ ├── Matriz_Bibliotecas/ # Biblioteca para a Matriz WS2812
-│ │ ├── generated/ # Arquivos gerados pelo pioasm
-│ │ │ └── ws2812.pio.h # Header do programa PIO compilado
-│ │ ├── matriz_led.c # Implementação do controle da matriz
-│ │ ├── matriz_led.h # Header do controle da matriz
-│ │ └── ws2812.pio # Código fonte PIO Assembly para WS2812
-│ └── FreeRTOSConfig.h # Configurações específicas do FreeRTOS para este projeto
-├── .gitignore # Arquivos e diretórios ignorados pelo Git
-├── CMakeLists.txt # Script de configuração do CMake para o projeto
-├── main.c # Arquivo principal com a lógica da aplicação e inicialização das tarefas
-├── pico_sdk_import.cmake # Script padrão do SDK para importação
-└── README.md # Este arquivo de documentação
-
-*   **`main.c`:** Contém a função `main`, inicialização do sistema, criação das tarefas (se usar RTOS) e a lógica principal ou ponto de entrada.
-*   **`lib/`:** Armazena bibliotecas customizadas ou de terceiros específicas para este projeto. Cada subdiretório geralmente contém um módulo (`.c` e `.h`).
-*   **`*.pio`:** Arquivos de programa para o Programmable I/O (PIO) do RP2040. São compilados pelo `pioasm` (geralmente via CMake) para gerar headers (`.pio.h`).
-*   **`CMakeLists.txt`:** Define como o projeto é construído, quais arquivos compilar, quais bibliotecas do SDK usar (ex: `pico_stdlib`, `hardware_i2c`, `hardware_pio`, `FreeRTOS-Kernel`) e como gerar o executável final (`.uf2`).
-*   **`FreeRTOSConfig.h`:** (Se aplicável) Configurações do kernel FreeRTOS (tamanho da stack, clock, etc.).
+```
+PicoSignaLED/
+├─ lib/
+│  ├─ Display_Bibliotecas/
+│  │  ├─ font.h           # Bitmaps 8×8 e 5×5
+│  │  ├─ ssd1306.c/.h     # Driver OLED I²C
+│  ├─ Matriz_Bibliotecas/
+│  │  ├─ matriz_led.c/.h  # Driver WS2812 via PIO
+│  │  └─ generated/ws2812.pio.h
+├─ FreeRTOSConfig.h       # Ajustado para RP2040
+├─ main.c                 # Lógica de alto nível / tasks
+├─ CMakeLists.txt         # Build script
+└─ README.md              # Este arquivo ✍️
+```
 
 ---
 
 ## 👉 Como Usar
 
-Após compilar e carregar o firmware no Pico:
+1. **Ligue o Pico** - o modo inicial é **Normal**.
+2. **Pressione Botão A** para alternar entre Normal ↔ Noturno.
+3. **Observe**:
 
-1.  **Alimentação:** Conecte o Pico via USB. O projeto deve iniciar automaticamente.
-2.  **Observar:** <Descreva o comportamento esperado. Ex: "O display OLED mostrará o status atual do semáforo. A matriz de LEDs exibirá um padrão correspondente à cor ativa (verde, amarelo ou vermelho). Os LEDs individuais seguirão a sequência do semáforo.">
-3.  **Interagir:** <Descreva como interagir. Ex: "Pressione o Botão A (conectado ao GP<Número>) para alternar entre o modo NORMAL e o modo NOTURNO. O modo atual será exibido no OLED.">
-4.  **Feedback Sonoro:** <Descreva o feedback sonoro. Ex: "O buzzer emitirá beeps com padrões diferentes dependendo do estado da luz (contínuo no verde, rápido no amarelo, lento no vermelho, esparso no noturno).">
-5.  **(Opcional) Monitor Serial:** Conecte-se à porta serial USB do Pico usando um terminal serial (Putty, Minicom, Monitor Serial do VS Code/Arduino IDE) com baud rate `<Baud Rate, ex: 115200>` para visualizar mensagens de debug (se `printf` estiver habilitado).
+   * OLED exibe título, modo e cor atual.
+   * Matriz WS2812 mostra animação (“✓” / “!” / “✕”).
+   * Buzzer emite padrão de beeps condizente.
+4. **Pressione Botão B** para entrar no bootloader UF2 e atualizar o firmware.
 
----
 
-## 🐛 Debugging e Logs
+## 🐛 Debugging & Logs
 
-*   **Saída `printf`:** O projeto está configurado para enviar saída `printf` via USB Serial (verifique `pico_enable_stdio_usb` no `CMakeLists.txt`). Use um monitor serial no seu PC para ver essas mensagens.
-    *   **Configuração:** Baud Rate: `115200` (geralmente padrão, mas confirme), Data bits: 8, Parity: None, Stop bits: 1.
-    *   **Porta Serial:** No Linux, geralmente `/dev/ttyACM0`. No Windows, `COMx` (verifique no Gerenciador de Dispositivos).
-*   **Debugging SWD:** Para debugging avançado (breakpoints, inspeção de memória), você pode usar um probe SWD (como outro Pico rodando Picoprobe, ou um J-Link/ST-Link) e o GDB via VS Code (com a extensão Cortex-Debug) ou linha de comando (`arm-none-eabi-gdb`). A configuração está geralmente em `.vscode/launch.json`.
-*   **LEDs de Status:** <Se você usa LEDs específicos para indicar estados ou erros, descreva aqui. Ex: "O LED Azul (GP<Número>) pisca rapidamente se ocorrer um erro na inicialização do I2C.">
-
----
+* `printf()` via `stdio_usb` → visualize no *serial monitor* (baud irrelevante).
+* Use `pico_enable_stdio_uart()` se precisar de UART em paralelo.
 
 ## 👤 Autor e Contato
 
-*   **Autor:** <Jonas Souza Pinto>
-*   **Email:** `<Jonassouza871@hotmail.com>`
-
+* **Autor**: `Jonas Souza Pinto / CEPEDI`
+* **E-mail / GitHub**: `<Jonassouza871@hotmail.com>` — *Contribuições são bem-vindas!*
