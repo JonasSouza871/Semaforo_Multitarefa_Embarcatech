@@ -1,20 +1,12 @@
-
-# <Nome do Projeto> 🚀
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Raspberry Pi Pico](https://img.shields.io/badge/Platform-Raspberry%20Pi%20Pico-purple.svg)](https://www.raspberrypi.com/products/raspberry-pi-pico/)
-[![Language: C](https://img.shields.io/badge/Language-C-blue.svg)]()
-
-
+# Semáforo Inteligente com Pico e FreeRTOS 🚀
 
 ## 📘 Descrição Breve
 
-Este repositório contém o firmware para `<Nome do Projeto>`, um projeto embarcado desenvolvido para a placa Raspberry Pi Pico.
+Este repositório contém o firmware para o **Semáforo Inteligente com Pico e FreeRTOS**, um projeto embarcado desenvolvido para a placa **Raspberry Pi Pico** (compatível com Pico W, conforme `CMakeLists.txt`).
 
-**Objetivo Principal:** <Descreva de forma concisa o que o projeto faz. Exemplo: "Controlar um semáforo inteligente com modos diurno/noturno e feedback visual/sonoro.">
+**Objetivo Principal:** Simular um sistema de semáforo de trânsito com funcionalidades avançadas, incluindo modos de operação diurno (sequência normal Verde-Amarelo-Vermelho) e noturno (Amarelo piscante), com feedback visual detalhado em um display OLED e uma matriz de LEDs WS2812, além de alertas sonoros via buzzer.
 
-**Utilidade:** <Explique para que serve o projeto ou qual problema ele resolve. Exemplo: "Serve como uma demonstração didática do uso de FreeRTOS, PIO para WS2812 e comunicação I2C com display OLED no Pico.">
-
+**Utilidade:** Serve como um exemplo prático e didático do uso do Raspberry Pi Pico com o sistema operacional de tempo real **FreeRTOS** para gerenciar múltiplas tarefas concorrentes (controle dos LEDs, leitura de botão, atualização do display, controle da matriz, buzzer). Demonstra também a integração com periféricos comuns utilizando **GPIO** (LEDs e Botão), **I2C** (Display OLED SSD1306), **PIO** (Matriz de LEDs WS2812) e **PWM** (Buzzer).
 ---
 
 ## ✨ Funcionalidades Principais
