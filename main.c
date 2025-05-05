@@ -248,6 +248,6 @@ int main(void) {
     xTaskCreate(tarefaBuzzer,          "Buzzer", configMINIMAL_STACK_SIZE, NULL, 1, NULL);
     xTaskCreate(tarefaMatriz,          "Matriz", configMINIMAL_STACK_SIZE + 64, NULL, 1, NULL);  // Maior stack para matriz
 
-    vTaskStartScheduler();  // Inicia FreeRTOS
+    vTaskStartScheduler();  // Inicia FreeRTOSs
     while (true) { }
 }
