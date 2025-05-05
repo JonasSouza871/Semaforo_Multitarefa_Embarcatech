@@ -83,7 +83,7 @@ O projeto serve como base para laboratórios de sistemas embarcados, aulas de RT
    ```bash
    git clone -b <versão> https://github.com/raspberrypi/pico-sdk
    export PICO_SDK_PATH=<path>
-````
+
 
 2. **FreeRTOS-Kernel** (fork RP2040)
 
@@ -102,19 +102,23 @@ O projeto serve como base para laboratórios de sistemas embarcados, aulas de RT
 
 ## ▶️ Compilação e Upload
 
-```bash
+
 # 1. Crie diretório de build isolado
+```bash
 mkdir build && cd build
+ ```
 
 # 2. Gere arquivos via CMake
+```bash
 cmake -G "Ninja" ..
-
+ ```
 # 3. Compile
+```bash
 ninja
-
+ ```
 # 4. Conecte o Pico em BOOTSEL (ou use Botão B) e faça upload
 cp semaforo.uf2 /media/<username>/RPI-RP2
-```
+
 
 > 🔄 *Para atualização OTA no Pico W, substitua o passo 4 pelo seu script de OTA.*
 
