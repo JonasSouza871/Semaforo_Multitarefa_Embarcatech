@@ -17,7 +17,7 @@ O projeto serve como base para laboratórios de sistemas embarcados, aulas de RT
 |---|---------|----------|
 | 1 | **Modo Normal** | Sequência Verde → Amarelo → Vermelho com tempos configuráveis |
 | 2 | **Modo Noturno** | Pisca amarelo em duty-cycle reduzido |
-| 3 | **Buzzer Acessível** | Padrões de beep diferentes por cor, facilitando uso por PCD 🦮 |
+| 3 | **Buzzer Acessível** | Padrões de beep diferentes por cor, facilitando uso por PCD|
 | 4 | **Display OLED** | Título, modo atual, cor ativa e mensagens contextuais |
 | 5 | **Matriz 5 × 5** | Animação “✓”, “!” ou “✕” sincronizada com o semáforo |
 | 6 | **Hot-Swap UF2** | Botão B reinicia diretamente no bootloader para atualização |
