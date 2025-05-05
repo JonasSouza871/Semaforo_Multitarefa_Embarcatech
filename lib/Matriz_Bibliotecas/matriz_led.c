@@ -1,22 +1,18 @@
 #include "matriz_led.h"
 
-/* ---------- Cores ---------- */
 const uint32_t COR_VERDE    = GRB(0,   150, 0);  //Verde com intensidade moderada
 const uint32_t COR_AMARELO  = GRB(255, 140, 0);  //Amarelo com tom quente
 const uint32_t COR_VERMELHO = GRB(190,   0, 0);  //Vermelho com brilho reduzido
 const uint32_t COR_OFF      = 0;                 //Desliga o LED
 
-/* ---------- Padrões gráficos (MSB-à-esquerda) ---------- */
 const uint8_t PAD_OK[5]  = {0b00001,0b00010,0b00100,0b11000,0b10000};  //Padrão "✓" para verde
 const uint8_t PAD_EXC[5] = {0b00100,0b00100,0b00100,0b00000,0b00100};  //Padrão "!" para amarelo
 const uint8_t PAD_X[5]   = {0b10001,0b01010,0b00100,0b01010,0b10001};  //Padrão "X" para vermelho
 
-/* ---------- Aux interno ---------- */
 static inline void ws2812_put(uint32_t grb) {  //Envia dados GRB para um LED
     pio_sm_put_blocking(pio0, 0, grb << 8u);  //Desloca 8 bits para alinhar protocolo WS2812
 }
 
-/* ---------- Implementação da API ---------- */
 void inicializar_matriz_led(void) {  //CONFIGURA PIO PARA CONTROLAR WS2812
     PIO pio = pio0;
     uint off = pio_add_program(pio, &ws2812_program);  //Carrega programa PIO
