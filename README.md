@@ -1,14 +1,14 @@
 # 🚦 **PicoSignaLED** – Semáforo Inteligente com Display OLED & Matriz WS2812
 
 ## 📘 *Descrição Breve*  
-> **PicoSignaLED** é um firmware para o Raspberry Pi Pico (RP2040) que implementa um semáforo inteligente completo:  
+ **PicoSignaLED** é um firmware para o Raspberry Pi Pico (RP2040) que implementa um semáforo inteligente completo:  
 > • Dois modos de operação (Normal / Noturno)  
 > • Exibição gráfica em OLED 128×64 (SSD1306)  
 > • Símbolos animados em matriz 5×5 de LEDs WS2812  
 > • Sinalização sonora em buzzer PWM  
 > • Arquitetura multitarefa com **FreeRTOS**.  
 
-> O projeto serve como base para laboratórios de sistemas embarcados, aulas de RTOS ou demonstrações de periféricos I²C, PIO + DMA e PWM.
+O projeto serve como base para laboratórios de sistemas embarcados, aulas de RTOS ou demonstrações de periféricos I²C, PIO + DMA e PWM.
 
 ---
 
