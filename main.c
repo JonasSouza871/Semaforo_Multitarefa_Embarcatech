@@ -41,7 +41,7 @@ volatile EstadoLuz luzAtual = LUZ_VERDE;  // Estado inicial da luz
 
 /* Temporizações */
 #define TEMPO_VERDE     5000
-#define TEMPO_AMARELO   2000
+#define TEMPO_AMARELO   3000
 #define TEMPO_VERMELHO  5000
 #define PISCA_ON_MS     2000 //Ligado Noturno 
 #define PISCA_OFF_MS    2000 // desligado Noturno
@@ -178,7 +178,7 @@ void tarefaBuzzer(void *pvParam) {  // GERA SONS BASEADOS NO ESTADO DA LUZ
         uint32_t on_ms = 0, off_ms = 200;
         if (estadoAtual == MODO_NORMAL) {
             switch (luzAtual) {
-                case LUZ_VERDE:    on_ms = 100; off_ms = 900;  break;
+                case LUZ_VERDE:    on_ms = 1000; off_ms = 900;  break;
                 case LUZ_AMARELO:  on_ms = 100; off_ms = 100;  break;  // Beep rápido para atenção
                 case LUZ_VERMELHO: on_ms = 500; off_ms = 1500; break;
                 default:           on_ms = 0;   off_ms = 500;  break;
