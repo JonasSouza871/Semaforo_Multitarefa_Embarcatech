@@ -182,7 +182,7 @@ void tarefaBuzzer(void *pvParam) {  // GERA SONS BASEADOS NO ESTADO DA LUZ
                 default:           on_ms = 0;   off_ms = 500;  break;
             }
         } else {
-            on_ms = 100; off_ms = 1900;  // Beep esparso no modo noturno
+            on_ms = 300; off_ms = 1700;  // Beep esparso no modo noturno
         }
         if (on_ms > 0) {
             BUZZER_LIGAR();
